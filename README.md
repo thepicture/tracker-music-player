@@ -13,6 +13,7 @@ Simple implementation of Protracker spec
 
 - `Sample` - represents channel unit. Requires `Streamer`
 - `Streamer` - represents external player where the sound is piped to
+- `Channel` - represents single channel. Requires `samples` array of `Sample`
 
 ## Test
 
