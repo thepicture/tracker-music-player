@@ -1,0 +1,16 @@
+{
+  "name": "tracker-music-player",
+  "version": "1.0.0",
+  "description": "Plays tracker music",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [
+    "tracker",
+    "music",
+    "player"
+  ],
+  "author": "thepicture",
+  "license": "ISC"
+}
