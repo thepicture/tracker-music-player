@@ -20,3 +20,9 @@ Simple implementation of Protracker spec
 ```bash
 npm test
 ```
+
+Include manual test (sound warning)
+
+```bash
+npm test -- --manual
+```

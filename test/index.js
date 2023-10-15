@@ -9,6 +9,10 @@ const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
 
 describe("manual playing", async () => {
+  if (!process.argv.includes("--manual")) {
+    return;
+  }
+
   describe("manual sample", () => {
     it("should play note physically", async () => {
       const expected = true;
