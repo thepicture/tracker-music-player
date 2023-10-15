@@ -1,5 +1,6 @@
 "use strict";
 
+const { readFileSync } = require("node:fs");
 const assert = require("node:assert/strict");
 const { describe, it } = require("node:test");
 const Sample = require("../lib/Sample");
@@ -7,9 +8,18 @@ const Channel = require("../lib/Channel");
 const Streamer = require("../lib/Streamer");
 const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
+const Song = require("../lib/Song");
 
 describe("manual playing", async () => {
+  if (!process.argv.includes("--manual")) {
+    return;
+  }
+
   describe("manual sample", () => {
+    if (!process.argv.includes("--sample")) {
+      return;
+    }
+
     it("should play note physically", async () => {
       const expected = true;
 
@@ -114,6 +124,10 @@ describe("manual playing", async () => {
   });
 
   describe("manual channel", () => {
+    if (!process.argv.includes("--sample")) {
+      return;
+    }
+
     it("should play channel notes", async () => {
       const expected = true;
 
@@ -140,6 +154,19 @@ describe("manual playing", async () => {
       assert.strictEqual(await actual(), expected);
     });
   });
+
+  describe("playing", () => {
+    if (!process.argv.includes("--song")) {
+      return;
+    }
+
+    it("should play a song", async () => {
+      const song = new Song(readFileSync("./assets/example.mod"));
+      await song.play();
+
+      assert.ok(true);
+    });
+  });
 });
 
 describe("sample", () => {
@@ -155,5 +182,15 @@ describe("sample", () => {
     sample.play("c4");
 
     assert.deepStrictEqual(actual, expected);
+  });
+});
+
+describe("song", () => {
+  it("should load song details", () => {
+    const song = new Song(readFileSync("./assets/example.mod"));
+
+    assert.strictEqual(song.title, "");
+    assert.strictEqual(song.samples.length, 31);
+    assert.strictEqual(song.patterns.length, 17);
   });
 });
