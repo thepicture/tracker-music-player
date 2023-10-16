@@ -11,9 +11,8 @@ Simple implementation of Protracker spec
 
 ## API
 
-- `Sample` - represents channel unit. Requires `Streamer`
-- `Streamer` - represents external player where the sound is piped to
-- `Channel` - represents single channel. Requires `samples` array of `Sample`
+- `Sample` - represents channel's unit
+- `Channel` - represents single channel. Requires `samples` array of `Sample`. Has external player where the sound is piped to
 - `Song` - marshals the `Channel` objects
 
 ## Supports
