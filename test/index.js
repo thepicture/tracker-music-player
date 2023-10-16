@@ -5,7 +5,6 @@ const assert = require("node:assert/strict");
 const { describe, it } = require("node:test");
 const Sample = require("../lib/Sample");
 const Channel = require("../lib/Channel");
-const Streamer = require("../lib/Streamer");
 const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
 const Song = require("../lib/Song");
@@ -24,15 +23,11 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const streamer = new Streamer();
-
-        const sample = new Sample(streamer, Buffer.from(pad));
+        const sample = new Sample(Buffer.from(pad));
 
         sample.play("c4");
 
         setTimeout(() => {
-          streamer.stop();
-
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -44,15 +39,11 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const streamer = new Streamer();
-
-        const sample = new Sample(streamer, Buffer.from(pad));
+        const sample = new Sample(Buffer.from(pad));
 
         sample.play("c5");
 
         setTimeout(() => {
-          streamer.stop();
-
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -64,19 +55,14 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const streamer1 = new Streamer();
-        const sample1 = new Sample(streamer1, Buffer.from(pad));
+        const sample1 = new Sample(Buffer.from(pad));
 
-        const streamer2 = new Streamer();
-        const sample2 = new Sample(streamer2, Buffer.from(pad));
+        const sample2 = new Sample(Buffer.from(pad));
 
         sample1.play("c4");
         sample2.play("c3");
 
         setTimeout(() => {
-          streamer1.stop();
-          streamer2.stop();
-
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -88,14 +74,11 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const streamer = new Streamer();
-        const sample = new Sample(streamer, Buffer.from(pad), Sample.LOOP);
+        const sample = new Sample(Buffer.from(pad), Sample.LOOP);
 
         sample.play("c4");
 
         setTimeout(() => {
-          streamer.stop();
-
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -107,14 +90,11 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const streamer = new Streamer();
-        const sample = new Sample(streamer, Buffer.from(pad), Sample.LOOP, 50);
+        const sample = new Sample(Buffer.from(pad), Sample.LOOP, 50);
 
         sample.play("c4");
 
         setTimeout(() => {
-          streamer.stop();
-
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -132,8 +112,7 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = async () => {
-        const streamer = new Streamer();
-        const samples = [new Sample(streamer, Buffer.from(pad), Sample.LOOP)];
+        const samples = [new Sample(Buffer.from(pad), Sample.LOOP)];
 
         const channel = new Channel(samples);
 
@@ -145,8 +124,6 @@ describe("manual playing", async () => {
         await new Promise((r) => setTimeout(r, 500));
         channel.play("e4", 0);
         await new Promise((r) => setTimeout(r, 500));
-
-        streamer.stop();
 
         return true;
       };
