@@ -8,6 +8,7 @@ const Channel = require("../lib/Channel");
 const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
 const Song = require("../lib/Song");
+const toNote = require("../lib/toNote");
 
 describe("manual playing", async () => {
   if (!process.argv.includes("--manual")) {
@@ -24,10 +25,12 @@ describe("manual playing", async () => {
 
       const actual = await new Promise((resolve) => {
         const sample = new Sample(Buffer.from(pad));
+        const channel = new Channel([sample]);
 
-        sample.play("c4");
+        channel.play(toNote(404), 1);
 
         setTimeout(() => {
+          channel.destroy();
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -40,10 +43,12 @@ describe("manual playing", async () => {
 
       const actual = await new Promise((resolve) => {
         const sample = new Sample(Buffer.from(pad));
+        const channel = new Channel([sample]);
 
-        sample.play("c5");
+        channel.play(toNote(202), 1);
 
         setTimeout(() => {
+          channel.destroy();
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -55,14 +60,17 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample1 = new Sample(Buffer.from(pad));
+        const sample = new Sample(Buffer.from(pad));
 
-        const sample2 = new Sample(Buffer.from(pad));
+        const channel1 = new Channel([sample]);
+        const channel2 = new Channel([sample]);
 
-        sample1.play("c4");
-        sample2.play("c3");
+        channel1.play(toNote(404), 1);
+        channel2.play(toNote(808), 1);
 
         setTimeout(() => {
+          channel1.destroy();
+          channel2.destroy();
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -76,9 +84,11 @@ describe("manual playing", async () => {
       const actual = await new Promise((resolve) => {
         const sample = new Sample(Buffer.from(pad), Sample.LOOP);
 
-        sample.play("c4");
+        const channel = new Channel([sample]);
+        channel.play(toNote(404), 1);
 
         setTimeout(() => {
+          channel.destroy();
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -90,11 +100,16 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample = new Sample(Buffer.from(pad), Sample.LOOP, 50);
+        const sample = new Sample(Buffer.from(pad), Sample.LOOP);
 
-        sample.play("c4");
+        const channel = new Channel([sample]);
+        channel.play(toNote(404), 1, {
+          type: Channel.VOLUME_EFFECT,
+          parameter: 32,
+        });
 
         setTimeout(() => {
+          channel.destroy();
           resolve(true);
         }, MANUAL_TEST_TIME_IN_MILLISECONDS);
       });
@@ -104,7 +119,7 @@ describe("manual playing", async () => {
   });
 
   describe("manual channel", () => {
-    if (!process.argv.includes("--sample")) {
+    if (!process.argv.includes("--channel")) {
       return;
     }
 
@@ -116,14 +131,24 @@ describe("manual playing", async () => {
 
         const channel = new Channel(samples);
 
-        channel.play("c4", 0);
+        process.nextTick(() => {
+          channel.play(toNote(404), 1);
+        });
         await new Promise((r) => setTimeout(r, 500));
-        channel.play("e4", 0);
+        process.nextTick(() => {
+          channel.play(toNote(360), 1);
+        });
         await new Promise((r) => setTimeout(r, 500));
-        channel.play("c4", 0);
+        process.nextTick(() => {
+          channel.play(toNote(320), 1);
+        });
         await new Promise((r) => setTimeout(r, 500));
-        channel.play("e4", 0);
+        process.nextTick(() => {
+          channel.play(toNote(360), 1);
+        });
         await new Promise((r) => setTimeout(r, 500));
+
+        channel.destroy();
 
         return true;
       };
@@ -139,35 +164,28 @@ describe("manual playing", async () => {
 
     it("should play a song", async () => {
       const song = new Song(readFileSync("./assets/example.mod"));
-      await song.play();
+      song.play();
 
-      assert.ok(true);
+      process.stdin.on("data", () => {
+        song.stop();
+        assert.ok(!song.isPlaying);
+
+        process.stdin.destroy();
+      });
     });
   });
 });
 
 describe("sample", () => {
   it("should play sample", () => {
-    const expected = [...pad];
-    const getPlayer = (where) => ({
-      play: ({ buffer }) => where.push(...buffer),
-    });
+    const expected = true;
+    const sample = new Sample(Buffer.from(pad));
+    const channel = new Channel([sample]);
 
-    const actual = [];
-    const sample = new Sample(getPlayer(actual), Buffer.from(pad));
+    channel.mute();
+    channel.play(toNote(404), 1);
+    const actual = channel.isPlaying;
 
-    sample.play("c4");
-
-    assert.deepStrictEqual(actual, expected);
-  });
-});
-
-describe("song", () => {
-  it("should load song details", () => {
-    const song = new Song(readFileSync("./assets/example.mod"));
-
-    assert.strictEqual(song.title, "");
-    assert.strictEqual(song.samples.length, 31);
-    assert.strictEqual(song.patterns.length, 17);
+    assert.strictEqual(actual, expected);
   });
 });

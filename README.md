@@ -43,5 +43,5 @@ npm test -- --manual --song
 ```
 
 ```bash
-npm test -- --manual --song --sample
+npm test -- --manual --song --channel --sample
 ```
