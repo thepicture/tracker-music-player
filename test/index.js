@@ -3,12 +3,12 @@
 const { readFileSync } = require("node:fs");
 const assert = require("node:assert/strict");
 const { describe, it } = require("node:test");
+const Song = require("../lib/Song");
 const Sample = require("../lib/Sample");
+const toNote = require("../lib/toNote");
 const Channel = require("../lib/Channel");
 const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
-const Song = require("../lib/Song");
-const toNote = require("../lib/toNote");
 
 describe("manual playing", async () => {
   if (!process.argv.includes("--manual")) {
@@ -24,8 +24,9 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample = new Sample(Buffer.from(pad));
-        const channel = new Channel([sample]);
+        const channel = new Channel({
+          samples: [new Sample().withBuffer(Buffer.from(pad))],
+        });
 
         channel.play(toNote(404), 1);
 
@@ -42,8 +43,9 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample = new Sample(Buffer.from(pad));
-        const channel = new Channel([sample]);
+        const channel = new Channel({
+          samples: [new Sample().withBuffer(Buffer.from(pad))],
+        });
 
         channel.play(toNote(202), 1);
 
@@ -60,10 +62,12 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample = new Sample(Buffer.from(pad));
-
-        const channel1 = new Channel([sample]);
-        const channel2 = new Channel([sample]);
+        const channel1 = new Channel({
+          samples: [new Sample().withBuffer(Buffer.from(pad))],
+        });
+        const channel2 = new Channel({
+          samples: [new Sample().withBuffer(Buffer.from(pad))],
+        });
 
         channel1.play(toNote(404), 1);
         channel2.play(toNote(808), 1);
@@ -82,9 +86,12 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample = new Sample(Buffer.from(pad), Sample.LOOP);
+        const sample = new Sample({
+          loopStart: 1,
+          loopEnd: pad.length,
+        }).withBuffer(Buffer.from(pad));
 
-        const channel = new Channel([sample]);
+        const channel = new Channel({ samples: [sample] });
         channel.play(toNote(404), 1);
 
         setTimeout(() => {
@@ -100,9 +107,12 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = await new Promise((resolve) => {
-        const sample = new Sample(Buffer.from(pad), Sample.LOOP);
+        const sample = new Sample({
+          loopStart: 1,
+          loopEnd: pad.length,
+        }).withBuffer(Buffer.from(pad));
 
-        const channel = new Channel([sample]);
+        const channel = new Channel({ samples: [sample] });
         channel.play(toNote(404), 1, {
           type: Channel.VOLUME_EFFECT,
           parameter: 32,
@@ -127,9 +137,14 @@ describe("manual playing", async () => {
       const expected = true;
 
       const actual = async () => {
-        const samples = [new Sample(Buffer.from(pad), Sample.LOOP)];
+        const samples = [
+          new Sample({
+            loopStart: 1,
+            loopEnd: pad.length,
+          }).withBuffer(Buffer.from(pad)),
+        ];
 
-        const channel = new Channel(samples);
+        const channel = new Channel({ samples });
 
         process.nextTick(() => {
           channel.play(toNote(404), 1);
@@ -179,8 +194,8 @@ describe("manual playing", async () => {
 describe("sample", () => {
   it("should play sample", () => {
     const expected = true;
-    const sample = new Sample(Buffer.from(pad));
-    const channel = new Channel([sample]);
+    const sample = new Sample().withBuffer(Buffer.from(pad));
+    const channel = new Channel({ samples: [sample] });
 
     channel.mute();
     channel.play(toNote(404), 1);
