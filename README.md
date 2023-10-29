@@ -26,6 +26,20 @@ const song = new Song(readFileSync("./path/to/module.mod"));
 await song.play();
 ```
 
+### Events
+
+`stop` - song stopped playing
+
+## Controls
+
+`1,2,...n, n = channel count` - toggle mute of the channel number
+
+`u` - unmute all channels
+
+`space` - toggle playing
+
+`ctrl+c` - exit
+
 ## Test
 
 ```bash

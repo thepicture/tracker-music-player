@@ -181,11 +181,8 @@ describe("manual playing", async () => {
       const song = new Song(readFileSync("./assets/example.mod"));
       song.play();
 
-      process.stdin.on("data", () => {
-        song.stop();
+      song.on("stop", () => {
         assert.ok(!song.isPlaying);
-
-        process.stdin.destroy();
       });
     });
   });
@@ -197,7 +194,7 @@ describe("sample", () => {
     const sample = new Sample().withBuffer(Buffer.from(pad));
     const channel = new Channel({ samples: [sample] });
 
-    channel.mute();
+    channel.toggleMute();
     channel.play(toNote(404), 1);
     const actual = channel.isPlaying;
 
