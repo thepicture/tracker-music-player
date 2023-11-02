@@ -6,7 +6,7 @@ Simple implementation of Protracker spec
 
 - loop sample once
 - loop sample forever
-- orchestrate 8 channels
+- orchestrate channels
 - set default sample volume
 
 ## API
@@ -15,14 +15,24 @@ Simple implementation of Protracker spec
 - `Channel` - represents single channel. Requires `samples` array of `Sample`. Has external player where the sound is piped to
 - `Song` - marshals the `Channel` objects
 
+`enableAmigaPanning` - amiga emulation. `true` by default, assigns channels panning from left to right, consumes more processor time
+
 ## Supports
 
 - 8CHN
+- 4CHN
+- M.K.
+- CD81
+- OKTA
+- TDZ\*
 
 ## API
 
 ```js
-const song = new Song(readFileSync("./path/to/module.mod"));
+const song = new Song(readFileSync("./path/to/module.mod"), {
+  enableAmigaPanning: false,
+});
+
 await song.play();
 ```
 
