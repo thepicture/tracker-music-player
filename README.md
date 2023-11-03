@@ -50,6 +50,14 @@ await song.play();
 
 `ctrl+c` - exit
 
+`left` - slower bpm
+
+`right` - faster bpm
+
+`up` - pattern back
+
+`down` - pattern forward
+
 ## Test
 
 ```bash
