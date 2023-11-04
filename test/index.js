@@ -9,6 +9,7 @@ const toNote = require("../lib/toNote");
 const Channel = require("../lib/Channel");
 const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
+const SongEventListener = require("../lib/SongEventListener");
 
 describe("manual playing", async () => {
   if (!process.argv.includes("--manual")) {
@@ -179,6 +180,8 @@ describe("manual playing", async () => {
 
     it("should play a song", async () => {
       const song = new Song(readFileSync("./assets/example.mod"));
+      new SongEventListener(song).listen();
+
       song.play();
 
       song.on("stop", () => {
