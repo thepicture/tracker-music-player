@@ -58,13 +58,17 @@ await song.play();
 
 `down` - pattern forward
 
+## Fallback
+
+If `ffplay` is not installed, fallbacks to `aplay`, with fixed note loop iteration count
+
 ## Test
 
 ```bash
 npm test
 ```
 
-Include manual test (sound warning)
+Manual tests (sound warning)
 
 ```bash
 npm test -- --manual --sample
