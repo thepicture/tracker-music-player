@@ -1,6 +1,6 @@
 {
   "name": "tracker-music-player",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Plays tracker music",
   "main": "index.js",
   "scripts": {
