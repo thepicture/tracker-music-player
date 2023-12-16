@@ -60,7 +60,7 @@ await song.play();
 
 ## Fallback
 
-If `ffplay` is not installed, fallbacks to `aplay`, with fixed note loop iteration count
+If `ffplay` is not installed, fallbacks to `aplay` and loops using heuristics
 
 ## Test
 
