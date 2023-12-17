@@ -58,6 +58,8 @@ await song.play();
 
 `down` - pattern forward
 
+`shift` + `1,2,...n, n = channel count` - solo channel if channel is not the only playing, unsolo everything otherwise
+
 ## Fallback
 
 If `ffplay` is not installed, fallbacks to `aplay` and loops using heuristics
