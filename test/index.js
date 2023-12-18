@@ -11,6 +11,8 @@ const { MANUAL_TEST_TIME_IN_MILLISECONDS } = require("../lib/enums");
 const { pad } = require("./sounds");
 const SongEventListener = require("../lib/SongEventListener");
 
+const sleep = () => new Promise((resolve) => setTimeout(resolve, 50));
+
 describe("manual playing", async () => {
   if (!process.argv.includes("--manual")) {
     return;
@@ -20,6 +22,30 @@ describe("manual playing", async () => {
     if (!process.argv.includes("--sample")) {
       return;
     }
+
+    it("should decrease volume note by note when played", async () => {
+      const expected = true;
+
+      const actual = await new Promise(async (resolve) => {
+        const sample = new Sample().withBuffer(Buffer.from(pad));
+
+        const channel = new Channel({ samples: [sample] });
+        for (let parameter = 64; parameter >= 0; parameter--) {
+          channel.play(toNote(404), 1, {
+            type: Channel.VOLUME_EFFECT,
+            parameter,
+          });
+          await sleep();
+        }
+
+        setTimeout(() => {
+          channel.destroy();
+          resolve(true);
+        }, MANUAL_TEST_TIME_IN_MILLISECONDS);
+      });
+
+      assert.strictEqual(actual, expected);
+    });
 
     it("should play note physically", async () => {
       const expected = true;
