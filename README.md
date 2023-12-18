@@ -42,7 +42,7 @@ await song.play();
 
 ## Controls
 
-`1,2,...n, n = channel count` - toggle mute of the channel number
+digits on keyboard - toggle mute of the channel number
 
 `u` - unmute all channels
 
@@ -58,7 +58,7 @@ await song.play();
 
 `down` - pattern forward
 
-`shift` + `1,2,...n, n = channel count` - solo channel if channel is not the only playing, unsolo everything otherwise
+`shift` + digits on keyboard - solo channel if other channels are playing, unsolo everything otherwise
 
 ## Fallback
 
